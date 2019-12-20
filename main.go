@@ -11,6 +11,8 @@ package zjve
 import (
     "encoding/json"
     "fmt"
+    "io"
+    "io/ioutil"
     "strings"
 )
 
@@ -34,21 +36,55 @@ func NewText(text string) (*JsonValueExtractor, error) {
     return NewWithUnmarshaler([]byte(text), DefaultUnmarshaler)
 }
 
+// 从Reader中读取数据
+func NewReader(r io.Reader) (*JsonValueExtractor, error) {
+    data, err := ioutil.ReadAll(r)
+    if err != nil {
+        return nil, err
+    }
+    return NewWithUnmarshaler(data, DefaultUnmarshaler)
+}
+
 // 创建一个提取器并且使用指定的解码函数
 func NewWithUnmarshaler(data []byte, unmarshaler Unmarshaler) (*JsonValueExtractor, error) {
     if unmarshaler == nil {
         unmarshaler = json.Unmarshal
     }
 
-    m := make(map[string]interface{})
-    if err := unmarshaler(data, &m); err != nil {
+    mm := make(map[string]interface{})
+    if err := unmarshaler(data, &mm); err != nil {
         return nil, err
     }
     return &JsonValueExtractor{
         data:        data,
-        mm:          m,
+        mm:          mm,
         unmarshaler: unmarshaler,
     }, nil
+}
+
+func (m *JsonValueExtractor) Read(data []byte) error {
+    return m.ReadWithUnmarshaler(data, DefaultUnmarshaler)
+}
+
+func (m *JsonValueExtractor) ReadText(text string) error {
+    return m.ReadWithUnmarshaler([]byte(text), DefaultUnmarshaler)
+}
+
+func (m *JsonValueExtractor) ReadReader(r io.Reader) error {
+    data, err := ioutil.ReadAll(r)
+    if err != nil {
+        return err
+    }
+    return m.ReadWithUnmarshaler(data, DefaultUnmarshaler)
+}
+
+func (m *JsonValueExtractor) ReadWithUnmarshaler(data []byte, unmarshaler Unmarshaler) error {
+    jve, err := NewWithUnmarshaler(data, unmarshaler)
+    if err != nil {
+        return err
+    }
+    *m = *jve
+    return nil
 }
 
 // 获取数据
