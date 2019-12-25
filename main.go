@@ -123,3 +123,8 @@ func (m *JsonValueExtractor) GetOfSep(path, sep string) (interface{}, error) {
     }
     return value, nil
 }
+
+// 直接获取map结构
+func (m *JsonValueExtractor) Map() map[string]interface{} {
+    return m.mm
+}
