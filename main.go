@@ -124,6 +124,14 @@ func (m *JsonValueExtractor) GetOfSep(path, sep string) (interface{}, error) {
     return value, nil
 }
 
+// 是否存在某个路径
+func (m *JsonValueExtractor) Has(path string) bool {
+    if v, err := m.Get(path); err == nil && v != nil {
+        return true
+    }
+    return false
+}
+
 // 直接获取map结构
 func (m *JsonValueExtractor) Map() map[string]interface{} {
     return m.mm
