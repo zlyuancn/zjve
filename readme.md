@@ -2,6 +2,8 @@
 
 ---
 
+# 此包以后不再更新, 请转到 [github.com/zlyuancn/zjve2](github.com/zlyuancn/zjve2)
+
 # 获得
 `go get -u github.com/zlyuancn/zjve`
 
