@@ -126,7 +126,7 @@ func (m *JsonValueExtractor) GetOfSep(path, sep string) (interface{}, error) {
 
 // 是否存在某个路径
 func (m *JsonValueExtractor) Has(path string) bool {
-    if v, err := m.Get(path); err == nil && v != nil {
+    if _, err := m.Get(path); err == nil {
         return true
     }
     return false
